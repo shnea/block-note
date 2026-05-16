@@ -1,0 +1,46 @@
+.shnea-blocknote-viewer .bn-editor,
+.shnea-blocknote-editor .bn-editor {
+  height: 100%;
+  overflow: auto;
+}
+
+.shnea-blocknote-viewer img {
+  cursor: zoom-in;
+}
+
+.shnea-blocknote-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.82);
+}
+
+.shnea-blocknote-modal__image {
+  max-width: min(100%, 1200px);
+  max-height: 90vh;
+  object-fit: contain;
+  background: #fff;
+}
+
+.shnea-blocknote-modal__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 6px;
+  color: #111827;
+  background: #fff;
+  font: inherit;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}

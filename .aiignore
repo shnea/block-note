@@ -1,0 +1,111 @@
+# Generic ignore rules for AI/Codex context scanning
+# Keep secrets and build artifacts out of AI context by default.
+
+# VCS and IDE
+.git/
+.svn/
+.hg/
+.idea/
+.vscode/
+
+# Dependencies
+node_modules/
+vendor/
+
+# Build outputs
+bin/
+obj/
+dist/
+build/
+out/
+.target/
+
+# Logs and caches
+*.log
+*.tmp
+*.temp
+*.cache
+.cache/
+.npm/
+.yarn/
+.pnpm-store/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+
+# Secrets (generic)
+.env
+.env.*
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.cer
+*.der
+*.keystore
+*.jks
+*.kdb
+*.kdbx
+*secret*
+*password*
+*passwd*
+*token*
+*apikey*
+*api_key*
+*accesskey*
+
+# Large / binary artifacts
+*.zip
+*.7z
+*.tar
+*.gz
+*.tgz
+*.bz2
+*.xz
+*.rar
+*.iso
+*.dmg
+*.exe
+*.dll
+*.so
+*.dylib
+*.jar
+*.war
+*.ear
+*.class
+*.o
+*.a
+*.lib
+*.pdb
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.ico
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.mp3
+*.wav
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+*.mdb
+*.accdb
+*.bak
+*.dump
+
+# Docs with sensitive data
+*.doc
+*.docx
+*.xls
+*.xlsx
+*.ppt
+*.pptx

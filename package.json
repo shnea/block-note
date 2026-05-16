@@ -1,0 +1,63 @@
+{
+  "name": "@shnea/blocknote",
+  "version": "0.1.0",
+  "description": "Reusable BlockNote editor and JSON viewer components.",
+  "type": "module",
+  "license": "MIT",
+  "author": "shnea",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./style.css": "./dist/style.css"
+  },
+  "sideEffects": [
+    "./dist/style.css",
+    "*.css"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts && node -e \"fs.cpSync('src/style.css','dist/style.css')\"",
+    "typecheck": "tsc --noEmit",
+    "dev": "npm --workspace examples/next run dev",
+    "example:build": "npm --workspace examples/next run build",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "@blocknote/core": "^0.51.0",
+    "@blocknote/mantine": "^0.51.0",
+    "@blocknote/react": "^0.51.0",
+    "@mantine/core": "^8.3.11",
+    "@mantine/hooks": "^8.3.11",
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "dependencies": {
+    "prosemirror-model": "^1.25.6"
+  },
+  "devDependencies": {
+    "@blocknote/mantine": "^0.51.0",
+    "@mantine/core": "^8.3.11",
+    "@mantine/hooks": "^8.3.11",
+    "@types/node": "^24.1.0",
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.7",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3"
+  },
+  "workspaces": [
+    "examples/next"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
