@@ -10,11 +10,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@blocknote/core": "^0.51.0",
-    "@blocknote/mantine": "^0.51.0",
-    "@blocknote/react": "^0.51.0",
-    "@mantine/core": "^8.3.11",
-    "@mantine/hooks": "^8.3.11",
     "@shnea/blocknote": "file:../..",
     "next": "^14.2.35",
     "react": "^18.2.0",

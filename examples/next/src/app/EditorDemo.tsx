@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useState } from "react";
 import { BlockNoteEditor, BlockNoteViewer } from "@shnea/blocknote";
+import { exampleFontOptions } from "./fonts";
 
 export default function EditorDemo() {
   const [json, setJson] = useState("");
@@ -48,9 +49,11 @@ export default function EditorDemo() {
             <h1>@shnea/blocknote</h1>
             <p>BlockNote 에디터와 JSON 뷰어를 한 화면에서 확인하는 예제입니다.</p>
           </div>
-          <span className={uploadError ? "status status--error" : "status"}>
-            {uploadError ? `업로드 오류: ${uploadError}` : "JSON 문자열 저장"}
-          </span>
+          <div className="header__tools">
+            <span className={uploadError ? "status status--error" : "status"}>
+              {uploadError ? `업로드 오류: ${uploadError}` : "JSON 문자열 저장"}
+            </span>
+          </div>
         </header>
 
         <section className="panel panel--editor">
@@ -65,6 +68,7 @@ export default function EditorDemo() {
             className="editor-shell"
             value={json}
             onChange={setJson}
+            fontFamilies={exampleFontOptions}
             uploadFile={uploadFile}
           />
         </section>
@@ -78,7 +82,7 @@ export default function EditorDemo() {
               </div>
             </div>
             <div className="viewer-shell">
-              <BlockNoteViewer value={json} />
+              <BlockNoteViewer value={json} fontFamilies={exampleFontOptions} />
             </div>
           </section>
 

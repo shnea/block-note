@@ -4,6 +4,17 @@
   overflow: auto;
 }
 
+.shnea-toolbar-icon {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+}
+
 .shnea-blocknote-viewer img {
   cursor: zoom-in;
 }

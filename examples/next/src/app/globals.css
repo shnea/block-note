@@ -41,6 +41,12 @@ textarea {
   padding: 4px 2px 8px;
 }
 
+.header__tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .header h1 {
   margin: 0 0 6px;
   font-size: 30px;
@@ -51,6 +57,29 @@ textarea {
   margin: 0;
   color: #475569;
   font-size: 15px;
+}
+
+.field {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #dbe3ee;
+  border-radius: 999px;
+  padding: 4px 6px 4px 12px;
+  color: #475569;
+  background: #fff;
+  font-size: 13px;
+}
+
+.field select {
+  height: 26px;
+  min-width: 180px;
+  border: 0;
+  color: #111827;
+  background: transparent;
+  font: inherit;
+  outline: none;
 }
 
 .panel {
@@ -146,6 +175,23 @@ textarea {
   .header {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .header__tools {
+    width: 100%;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .field {
+    width: 100%;
+    justify-content: space-between;
+    border-radius: 8px;
+  }
+
+  .field select {
+    min-width: 0;
+    width: 100%;
   }
 
   .preview-grid {

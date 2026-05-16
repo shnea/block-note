@@ -6,12 +6,15 @@ import { useEffect, useMemo, useState } from "react";
 import { ImageModal } from "./ImageModal";
 import { parseBlocks } from "../lib/json";
 import { patchProseMirrorRenderSpec } from "../lib/patchProseMirrorRenderSpec";
+import { schema } from "../lib/schema";
+import { loadFontFamilies, type FontFamilyOption } from "../lib/fonts";
 
 patchProseMirrorRenderSpec();
 
 export type BlockNoteViewerProps = {
   value?: string;
   className?: string;
+  fontFamilies?: readonly FontFamilyOption[];
   enableImageModal?: boolean;
 };
 
@@ -22,14 +25,20 @@ function mergeClassNames(...classNames: Array<string | undefined>): string {
 export function BlockNoteViewer({
   value,
   className,
+  fontFamilies = [],
   enableImageModal = true
 }: BlockNoteViewerProps) {
   const initialContent = useMemo(() => parseBlocks(value), [value]);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const editor = useCreateBlockNote({
+    schema,
     initialContent
   });
+
+  useEffect(() => {
+    loadFontFamilies(fontFamilies);
+  }, [fontFamilies]);
 
   useEffect(() => {
     const blocks = parseBlocks(value);

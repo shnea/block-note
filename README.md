@@ -7,11 +7,10 @@ BlockNote 기반 React 에디터와 JSON 뷰어를 재사용하기 위한 패키
 ## 설치
 
 ```bash
-npm install @shnea/blocknote \
-  @blocknote/core @blocknote/react @blocknote/mantine \
-  @mantine/core @mantine/hooks \
-  react react-dom
+npm install @shnea/blocknote
 ```
+
+`@blocknote/*`, `@mantine/*` 의존성은 패키지에 포함되어 함께 설치됩니다. React 앱이 아니라면 `react`, `react-dom`은 별도로 필요하지만, Next.js나 Vite React 프로젝트라면 보통 이미 설치되어 있습니다.
 
 CSS도 함께 import해야 합니다.
 
@@ -40,6 +39,105 @@ export function Example() {
 
 `BlockNoteEditor`는 `value`로 JSON 문자열을 받고, 변경 시 `onChange`로 JSON 문자열을 반환합니다. `BlockNoteViewer`도 같은 JSON 문자열을 읽기 전용으로 렌더링합니다.
 
+## 폰트 사용법
+
+폰트는 패키지 안에 고정하지 않고, 사용하는 애플리케이션에서 목록만 넘깁니다. 사용자는 텍스트를 선택한 뒤 포맷 툴바의 `폰트` 메뉴에서 적용합니다. 이미 적용된 폰트를 다시 누르면 해당 폰트가 해제됩니다.
+
+가장 단순한 형태는 `key`, `label`, `value`, `url`을 가진 배열입니다.
+
+```tsx
+import { BlockNoteEditor, BlockNoteViewer, type FontFamilyOption } from "@shnea/blocknote";
+
+const fonts: FontFamilyOption[] = [
+  {
+    key: "pretendard",
+    label: "Pretendard",
+    value: "\"Pretendard\", sans-serif",
+    url: "https://cdnjs.cloudflare.com/ajax/libs/pretendard/1.2.1/static/woff2/Pretendard-Regular.woff2"
+  },
+  {
+    key: "neo-dunggeunmo",
+    label: "Neo둥근모",
+    value: "\"NeoDunggeunmo\", monospace",
+    url: "https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.3/NeoDunggeunmo.woff",
+    format: "woff"
+  }
+];
+
+export function Example() {
+  const [json, setJson] = useState("");
+
+  return (
+    <>
+      <BlockNoteEditor
+        value={json}
+        onChange={setJson}
+        fontFamilies={fonts}
+      />
+      <BlockNoteViewer value={json} fontFamilies={fonts} />
+    </>
+  );
+}
+```
+
+Google Fonts처럼 CSS 파일을 불러와야 하는 폰트는 `stylesheetUrl`을 사용합니다.
+
+```ts
+const fonts: FontFamilyOption[] = [
+  {
+    key: "noto-sans-kr",
+    label: "Noto Sans KR",
+    value: "\"Noto Sans KR\", sans-serif",
+    stylesheetUrl: "https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600&display=swap"
+  }
+];
+```
+
+한 폰트에 여러 굵기를 넣고 싶으면 `faces`를 사용합니다.
+
+```ts
+const fonts: FontFamilyOption[] = [
+    {
+        key: "pretendard",
+        label: "Pretendard",
+        value: "\"Pretendard\", sans-serif",
+        faces: [
+            {
+                url: "https://cdnjs.cloudflare.com/ajax/libs/pretendard/1.2.1/static/woff2/Pretendard-Regular.woff2",
+                weight: "400"
+            },
+            {
+                url: "https://cdnjs.cloudflare.com/ajax/libs/pretendard/1.2.1/static/woff2/Pretendard-SemiBold.woff2",
+                weight: "600"
+            }
+        ]
+    },
+    {
+        key: "noto-sans-kr",
+        label: "Noto Sans KR",
+        value: "\"Noto Sans KR\", sans-serif",
+        stylesheetUrl: "https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600&display=swap"
+    }
+];
+```
+
+폰트 크기는 기본 목록이 내장되어 있어 별도 설정 없이 포맷 툴바에 표시됩니다. 기본값 대신 직접 지정하고 싶으면 `fontSizes`를 넘기면 됩니다. 크기도 이미 적용된 값을 다시 누르면 해제됩니다.
+
+```tsx
+<BlockNoteEditor
+  value={json}
+  onChange={setJson}
+  fontFamilies={fonts}
+  fontSizes={[
+    { label: "14px", value: "14px" },
+    { label: "18px", value: "18px" },
+    { label: "24px", value: "24px" }
+  ]}
+/>
+```
+
+에디터에서 선택한 폰트와 크기는 문서 JSON 안에 inline style로 저장됩니다. 읽기 전용 화면에서도 같은 폰트를 보이게 하려면 `BlockNoteViewer`에도 같은 `fontFamilies` 배열을 넘기세요.
+
 ## Editor Props
 
 ```ts
@@ -47,6 +145,8 @@ export type BlockNoteEditorProps = {
   value?: string;
   className?: string;
   editable?: boolean;
+  fontFamilies?: readonly FontFamilyOption[];
+  fontSizes?: readonly FontSizeOption[];
   onChange?: (json: string) => void;
   uploadFile?: (file: File) => Promise<string>;
 };
@@ -55,6 +155,8 @@ export type BlockNoteEditorProps = {
 - `value`: BlockNote 문서 JSON 문자열입니다. 비어 있으면 빈 에디터로 시작합니다.
 - `onChange`: 에디터 문서가 바뀔 때 `JSON.stringify(editor.document)` 결과를 받습니다.
 - `editable`: `false`면 편집을 막습니다.
+- `fontFamilies`: 선택 툴바에 표시할 폰트 목록입니다. 선택 시 필요한 폰트 CSS를 자동으로 로드합니다.
+- `fontSizes`: 선택 툴바에 표시할 폰트 크기 목록입니다. 넘기지 않으면 기본 크기 목록을 사용합니다.
 - `uploadFile`: 이미지/파일 업로드 처리를 애플리케이션에서 주입합니다. 반환값은 에디터에 삽입할 URL입니다.
 
 ## Viewer Props
@@ -63,10 +165,12 @@ export type BlockNoteEditorProps = {
 export type BlockNoteViewerProps = {
   value?: string;
   className?: string;
+  fontFamilies?: readonly FontFamilyOption[];
   enableImageModal?: boolean;
 };
 ```
 
+- `fontFamilies`: 문서 JSON에 저장된 폰트를 뷰어에서도 렌더링할 수 있도록 같은 폰트 목록을 넘깁니다.
 - `enableImageModal`: 기본값은 `true`입니다. 이미지 클릭 시 확대 모달을 엽니다.
 
 ## 파일 업로드 원칙
@@ -161,7 +265,10 @@ export { BlockNoteEditor, BlockNoteViewer };
 export type {
   BlockNoteEditorHandle,
   BlockNoteEditorProps,
-  BlockNoteViewerProps
+  BlockNoteViewerProps,
+  FontFaceOption,
+  FontFamilyOption,
+  FontSizeOption
 };
 export { schema };
 export type { CustomBlock, CustomBlockNoteEditor };
