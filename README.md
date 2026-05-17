@@ -4,6 +4,9 @@ BlockNote 기반 React 에디터와 JSON 뷰어를 재사용하기 위한 패키
 
 저장 형식은 BlockNote 문서 JSON 문자열만 사용합니다. Markdown 저장 기능은 제공하지 않지만, 에디터에 Markdown 텍스트를 붙여 넣으면 BlockNote 기본 paste 동작으로 블록 변환됩니다.
 
+- 샘플 페이지: https://bn.shnea.kr
+- 참고 페이지: https://www.blocknotejs.org
+
 ## 설치
 
 ```bash
