@@ -1,6 +1,6 @@
 {
   "name": "@shnea/blocknote",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Reusable BlockNote editor and JSON viewer components.",
   "type": "module",
   "license": "MIT",
