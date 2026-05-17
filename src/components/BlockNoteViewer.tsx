@@ -18,8 +18,27 @@ export type BlockNoteViewerProps = {
   enableImageModal?: boolean;
 };
 
+type FileLikeBlock = {
+  id: string;
+  type: string;
+  props?: {
+    url?: string;
+  };
+};
+
 function mergeClassNames(...classNames: Array<string | undefined>): string {
   return classNames.filter(Boolean).join(" ");
+}
+
+function getClickedFileBlockId(target: EventTarget | null): string | undefined {
+  if (!(target instanceof HTMLElement)) {
+    return undefined;
+  }
+
+  const fileElement = target.closest<HTMLElement>("[data-file-block]");
+  const blockElement = fileElement?.closest<HTMLElement>(".bn-block-outer[data-id]");
+
+  return blockElement?.dataset.id;
 }
 
 export function BlockNoteViewer({
@@ -57,13 +76,21 @@ export function BlockNoteViewer({
     <div
       className="shnea-blocknote-viewer"
       onClick={(event) => {
-        if (!enableImageModal) {
+        const target = event.target;
+        if (enableImageModal && target instanceof HTMLImageElement && target.currentSrc) {
+          setSelectedImage(target.currentSrc);
           return;
         }
 
-        const target = event.target;
-        if (target instanceof HTMLImageElement && target.currentSrc) {
-          setSelectedImage(target.currentSrc);
+        const blockId = getClickedFileBlockId(target);
+        if (!blockId) {
+          return;
+        }
+
+        const block = editor.getBlock(blockId) as FileLikeBlock | undefined;
+        const url = block?.props?.url;
+        if (url && block.type === "file") {
+          window.open(url, "_blank", "noopener,noreferrer");
         }
       }}
     >

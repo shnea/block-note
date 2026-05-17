@@ -29,6 +29,7 @@ export default function EditorDemo() {
 
     const data = (await response.json()) as {
       previewUrl?: string;
+      downloadUrl?: string;
       error?: string;
     };
 
@@ -37,8 +38,22 @@ export default function EditorDemo() {
       setUploadError(message);
       throw new Error(message);
     }
+    const isPreviewFile =
+        file.type.startsWith("image/") ||
+        file.type.startsWith("audio/") ||
+        file.type.startsWith("video/");
 
-    return data.previewUrl;
+    const url = isPreviewFile
+        ? data.previewUrl
+        : data.downloadUrl;
+
+    if (!url) {
+      const message = "Invalid upload response";
+      setUploadError(message);
+      throw new Error(message);
+    }
+
+    return url;
   }, []);
 
   return (
