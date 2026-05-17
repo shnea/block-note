@@ -5,6 +5,10 @@
   "type": "module",
   "license": "MIT",
   "author": "shnea",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shnea/block-note.git"
+  },
   "files": [
     "dist",
     "README.md"
