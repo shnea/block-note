@@ -258,6 +258,53 @@ npm run build
 npm run example:build
 ```
 
+Docker 로컬 실행:
+
+```bash
+cd examples/next
+cp .env.example .env
+docker compose up --build -d
+docker compose down
+```
+
+Docker 운영용 이미지 실행:
+
+```bash
+cd examples/next
+docker compose -f docker-compose.prod.yml up -d
+docker compose -f docker-compose.prod.yml down
+```
+
+기본 포트는 `3000`이며 `.env`의 `NEXT_EXAMPLE_PORT`로 바꿀 수 있습니다.
+
+Apple Silicon Mac에서 빌드한 이미지를 Linux amd64 서버에서 실행하려면 amd64 이미지로 빌드해 push해야 합니다.
+
+```bash
+cd ../..
+docker buildx create --use --name shnea-blocknote-builder || docker buildx use shnea-blocknote-builder
+docker buildx build \
+  --platform linux/amd64 \
+  -t registry.shnea.kr/shnea-blocknote-next-example:0.1.0 \
+  -f examples/next/Dockerfile \
+  --push .
+```
+
+arm64와 amd64를 같이 지원하려면:
+
+```bash
+docker buildx build \
+  --platform linux/amd64,linux/arm64 \
+  -t registry.shnea.kr/shnea-blocknote-next-example:0.1.0 \
+  -f examples/next/Dockerfile \
+  --push .
+```
+
+`WARNING: Error loading config file: /.docker/config.json` 경고가 나오면 Docker 설정 경로가 루트로 잡힌 상태입니다. 현재 사용자 설정으로 돌리세요.
+
+```bash
+export DOCKER_CONFIG="$HOME/.docker"
+```
+
 ## 내보내는 항목
 
 ```ts

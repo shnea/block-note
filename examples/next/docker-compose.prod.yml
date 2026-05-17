@@ -1,0 +1,20 @@
+services:
+  blocknote-next-example:
+    container_name: shnea-blocknote-next-example
+    image: ${NEXT_EXAMPLE_IMAGE:-shnea-blocknote-next-example:local}
+    platform: ${NEXT_EXAMPLE_PLATFORM:-linux/amd64}
+    restart: unless-stopped
+    environment:
+      FILE_SERVICE_BASE_URL: ${FILE_SERVICE_BASE_URL:-http://localhost:3000/api}
+      FILE_SERVICE_BEARER_TOKEN: ${FILE_SERVICE_BEARER_TOKEN:-}
+      FILE_SERVICE_RETENTION_CATEGORY: ${FILE_SERVICE_RETENTION_CATEGORY:-tmp}
+      PORT: 3000
+      HOSTNAME: 0.0.0.0
+    ports:
+      - "${NEXT_EXAMPLE_PORT:-3000}:3000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000 >/dev/null 2>&1 || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 10s

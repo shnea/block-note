@@ -1,0 +1,8 @@
+node_modules
+examples/next/node_modules
+dist
+examples/next/.next
+.git
+.env
+examples/next/.env
+npm-debug.log*
