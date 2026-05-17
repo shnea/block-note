@@ -1,4 +1,12 @@
 import {
+  AddBlockButton,
+  BlockColorsItem,
+  DragHandleButton,
+  RemoveBlockItem,
+  SideMenu,
+  SideMenuController,
+  TableColumnHeaderItem,
+  TableRowHeaderItem,
   FormattingToolbar,
   FormattingToolbarController,
   getFormattingToolbarItems,
@@ -7,8 +15,10 @@ import {
   useComponentsContext,
   useCreateBlockNote,
   useSelectedBlocks,
+  useExtensionState,
   type FormattingToolbarProps
 } from "@blocknote/react";
+import { SideMenuExtension } from "@blocknote/core/extensions";
 import { BlockNoteView } from "@blocknote/mantine";
 import "@blocknote/core/fonts/inter.css";
 import "@blocknote/mantine/style.css";
@@ -40,6 +50,8 @@ patchProseMirrorRenderSpec();
 
 const IMAGE_WIDTH_PRESET_50 = 1;
 const IMAGE_WIDTH_PRESET_33 = 2;
+const IMAGE_WIDTH_PRESET_100 = 3;
+const MOVE_BLOCK_EVENT = "shnea-blocknote:move-block";
 
 export type BlockNoteEditorProps = {
   value?: string;
@@ -129,6 +141,24 @@ function getClickedFileBlockId(target: EventTarget | null): string | undefined {
   return blockElement?.dataset.id;
 }
 
+function getBlockIdFromTarget(target: EventTarget | null): string | undefined {
+  if (!(target instanceof HTMLElement)) {
+    return undefined;
+  }
+
+  const blockElement = target.closest<HTMLElement>(
+    ".bn-block-outer[data-id], .bn-block[data-id]"
+  );
+
+  return blockElement?.dataset.id;
+}
+
+function getBlockElement(blockId: string): HTMLElement | undefined {
+  return document.querySelector<HTMLElement>(
+    `.bn-block-outer[data-id="${CSS.escape(blockId)}"]`
+  ) ?? undefined;
+}
+
 function isInsideImageMenu(target: EventTarget | null): boolean {
   return (
     target instanceof HTMLElement &&
@@ -138,6 +168,19 @@ function isInsideImageMenu(target: EventTarget | null): boolean {
 
 function isImageBlock(block: FileLikeBlock | undefined): block is ImageLikeBlock {
   return block?.type === "image";
+}
+
+function getMovePlacement(
+  blockId: string,
+  clientY: number
+): "before" | "after" {
+  const blockElement = getBlockElement(blockId);
+  if (!blockElement) {
+    return "after";
+  }
+
+  const rect = blockElement.getBoundingClientRect();
+  return clientY < rect.top + rect.height / 2 ? "before" : "after";
 }
 
 function isFileLikeBlockType(type: string): boolean {
@@ -268,6 +311,57 @@ function CustomFormattingToolbar({
   );
 }
 
+function MoveBlockItem() {
+  const Components = useComponentsContext()!;
+  const block = useExtensionState(SideMenuExtension, {
+    selector: (state) => state?.block
+  });
+
+  if (!block) {
+    return null;
+  }
+
+  return (
+    <Components.Generic.Menu.Item
+      className="bn-menu-item"
+      onClick={() => {
+        window.dispatchEvent(
+          new CustomEvent(MOVE_BLOCK_EVENT, {
+            detail: { blockId: block.id }
+          })
+        );
+      }}
+    >
+      Move
+    </Components.Generic.Menu.Item>
+  );
+}
+
+function CustomDragHandleMenu() {
+  const Components = useComponentsContext()!;
+
+  return (
+    <Components.Generic.Menu.Dropdown
+      className="bn-menu-dropdown bn-drag-handle-menu"
+    >
+      <RemoveBlockItem>Delete</RemoveBlockItem>
+      <BlockColorsItem>Colors</BlockColorsItem>
+      <MoveBlockItem />
+      <TableRowHeaderItem>Header row</TableRowHeaderItem>
+      <TableColumnHeaderItem>Header column</TableColumnHeaderItem>
+    </Components.Generic.Menu.Dropdown>
+  );
+}
+
+function CustomSideMenu() {
+  return (
+    <SideMenu>
+      <AddBlockButton />
+      <DragHandleButton dragHandleMenu={CustomDragHandleMenu} />
+    </SideMenu>
+  );
+}
+
 export const BlockNoteEditor = forwardRef<
   BlockNoteEditorHandle,
   BlockNoteEditorProps
@@ -291,6 +385,7 @@ export const BlockNoteEditor = forwardRef<
     x: number;
     y: number;
   }>();
+  const [moveBlockId, setMoveBlockId] = useState<string>();
 
   useEffect(() => {
     onChangeRef.current = onChange;
@@ -373,6 +468,35 @@ export const BlockNoteEditor = forwardRef<
         return;
       }
 
+      if (moveBlockId) {
+        const targetBlockId = getBlockIdFromTarget(event.target);
+        if (!targetBlockId || targetBlockId === moveBlockId) {
+          setMoveBlockId(undefined);
+          return;
+        }
+
+        const movingBlock = editor.getBlock(moveBlockId);
+        const targetBlock = editor.getBlock(targetBlockId);
+        if (!movingBlock || !targetBlock) {
+          setMoveBlockId(undefined);
+          return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        const placement = getMovePlacement(targetBlockId, event.clientY);
+        editor.transact(() => {
+          const [removedBlock] = editor.removeBlocks([movingBlock]);
+          if (removedBlock) {
+            editor.insertBlocks([removedBlock as never], targetBlock, placement);
+          }
+        });
+        setMoveBlockId(undefined);
+        setImageMenu(undefined);
+        return;
+      }
+
       const blockId = getClickedFileBlockId(event.target);
       if (!blockId) {
         setImageMenu(undefined);
@@ -393,8 +517,24 @@ export const BlockNoteEditor = forwardRef<
 
       return;
     },
-    [editor]
+    [editor, moveBlockId]
   );
+
+  useEffect(() => {
+    const handleMoveBlock = (event: Event) => {
+      const blockId = (event as CustomEvent<{ blockId?: string }>).detail?.blockId;
+      if (blockId) {
+        setMoveBlockId(blockId);
+        setImageMenu(undefined);
+      }
+    };
+
+    window.addEventListener(MOVE_BLOCK_EVENT, handleMoveBlock);
+
+    return () => {
+      window.removeEventListener(MOVE_BLOCK_EVENT, handleMoveBlock);
+    };
+  }, []);
 
   const updateSelectedImageWidth = useCallback(
     (previewWidth: number | undefined) => {
@@ -470,7 +610,9 @@ export const BlockNoteEditor = forwardRef<
         editable={editable}
         portalElements={{ default: null }}
         formattingToolbar={fontFamilies.length > 0 || fontSizes.length > 0 ? false : true}
+        sideMenu={false}
       >
+        <SideMenuController sideMenu={CustomSideMenu} />
         {fontFamilies.length > 0 || fontSizes.length > 0 ? (
           <FormattingToolbarController
             formattingToolbar={(props) => (
@@ -504,8 +646,22 @@ export const BlockNoteEditor = forwardRef<
           >
             50%
           </button>
-          <button type="button" onClick={() => updateSelectedImageWidth(undefined)}>
+          <button
+            type="button"
+            onClick={() => updateSelectedImageWidth(IMAGE_WIDTH_PRESET_100)}
+          >
             100%
+          </button>
+          <button type="button" onClick={() => updateSelectedImageWidth(undefined)}>
+            원본
+          </button>
+        </div>
+      ) : null}
+      {moveBlockId ? (
+        <div className="shnea-blocknote-move-banner">
+          Move: tap a destination block
+          <button type="button" onClick={() => setMoveBlockId(undefined)}>
+            Cancel
           </button>
         </div>
       ) : null}
