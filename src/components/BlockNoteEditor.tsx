@@ -553,8 +553,7 @@ export const BlockNoteEditor = forwardRef<
 
       editor.updateBlock(block, {
         props: {
-          previewWidth,
-          textAlignment: "left"
+          previewWidth
         }
       } as never);
       setImageMenu(undefined);

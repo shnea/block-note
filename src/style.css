@@ -98,9 +98,9 @@
 }
 
 .shnea-blocknote-viewer
-  .bn-block-outer:has(> .bn-block > .bn-block-content[data-content-type="image"][data-preview-width="1"]),
+  .bn-block-outer:has(> .bn-block > .bn-block-content[data-content-type="image"][data-preview-width="1"]:not([data-text-alignment="center"]):not([data-text-alignment="right"]):not([data-text-alignment="justify"])),
 .shnea-blocknote-editor
-  .bn-block-outer:has(> .bn-block > .bn-block-content[data-content-type="image"][data-preview-width="1"]) {
+  .bn-block-outer:has(> .bn-block > .bn-block-content[data-content-type="image"][data-preview-width="1"]:not([data-text-alignment="center"]):not([data-text-alignment="right"]):not([data-text-alignment="justify"])) {
   display: inline-block;
   width: 50%;
   max-width: 50%;
@@ -109,9 +109,9 @@
 }
 
 .shnea-blocknote-viewer
-  .bn-block-outer:has(> .bn-block > .bn-block-content[data-content-type="image"][data-preview-width="2"]),
+  .bn-block-outer:has(> .bn-block > .bn-block-content[data-content-type="image"][data-preview-width="2"]:not([data-text-alignment="center"]):not([data-text-alignment="right"]):not([data-text-alignment="justify"])),
 .shnea-blocknote-editor
-  .bn-block-outer:has(> .bn-block > .bn-block-content[data-content-type="image"][data-preview-width="2"]) {
+  .bn-block-outer:has(> .bn-block > .bn-block-content[data-content-type="image"][data-preview-width="2"]:not([data-text-alignment="center"]):not([data-text-alignment="right"]):not([data-text-alignment="justify"])) {
   display: inline-block;
   width: 33.3333%;
   max-width: 33.3333%;
@@ -182,6 +182,48 @@
   .bn-block-content[data-content-type="image"][data-preview-width="3"]
   .bn-visual-media-wrapper {
   width: 100% !important;
+}
+
+.shnea-blocknote-viewer
+  .bn-block-content[data-content-type="image"][data-preview-width="1"][data-text-alignment="center"]
+  .bn-file-block-content-wrapper,
+.shnea-blocknote-viewer
+  .bn-block-content[data-content-type="image"][data-preview-width="1"][data-text-alignment="right"]
+  .bn-file-block-content-wrapper,
+.shnea-blocknote-viewer
+  .bn-block-content[data-content-type="image"][data-preview-width="1"][data-text-alignment="justify"]
+  .bn-file-block-content-wrapper,
+.shnea-blocknote-editor
+  .bn-block-content[data-content-type="image"][data-preview-width="1"][data-text-alignment="center"]
+  .bn-file-block-content-wrapper,
+.shnea-blocknote-editor
+  .bn-block-content[data-content-type="image"][data-preview-width="1"][data-text-alignment="right"]
+  .bn-file-block-content-wrapper,
+.shnea-blocknote-editor
+  .bn-block-content[data-content-type="image"][data-preview-width="1"][data-text-alignment="justify"]
+  .bn-file-block-content-wrapper {
+  width: 50% !important;
+}
+
+.shnea-blocknote-viewer
+  .bn-block-content[data-content-type="image"][data-preview-width="2"][data-text-alignment="center"]
+  .bn-file-block-content-wrapper,
+.shnea-blocknote-viewer
+  .bn-block-content[data-content-type="image"][data-preview-width="2"][data-text-alignment="right"]
+  .bn-file-block-content-wrapper,
+.shnea-blocknote-viewer
+  .bn-block-content[data-content-type="image"][data-preview-width="2"][data-text-alignment="justify"]
+  .bn-file-block-content-wrapper,
+.shnea-blocknote-editor
+  .bn-block-content[data-content-type="image"][data-preview-width="2"][data-text-alignment="center"]
+  .bn-file-block-content-wrapper,
+.shnea-blocknote-editor
+  .bn-block-content[data-content-type="image"][data-preview-width="2"][data-text-alignment="right"]
+  .bn-file-block-content-wrapper,
+.shnea-blocknote-editor
+  .bn-block-content[data-content-type="image"][data-preview-width="2"][data-text-alignment="justify"]
+  .bn-file-block-content-wrapper {
+  width: 33.3333% !important;
 }
 
 .shnea-blocknote-viewer
