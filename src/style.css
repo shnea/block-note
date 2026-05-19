@@ -8,6 +8,40 @@
   height: 100%;
 }
 
+@media (max-width: 640px) {
+  .shnea-blocknote-viewer .bn-editor {
+    padding-left: 12px;
+    padding-right: 10px;
+  }
+
+  .shnea-blocknote-viewer .bn-block-group .bn-block-group {
+    margin-left: 14px;
+  }
+
+  .shnea-blocknote-viewer
+    .bn-block-group
+    .bn-block-group
+    > .bn-block-outer:not([data-prev-depth-changed])::before {
+    left: -11px;
+  }
+
+  .shnea-blocknote-viewer
+    .bn-block-content[data-content-type="numberedListItem"]::before,
+  .shnea-blocknote-viewer
+    .bn-block-content[data-content-type="bulletListItem"]::before {
+    min-width: 18px;
+    padding-right: 2px;
+  }
+
+  .shnea-blocknote-viewer
+    .bn-block-content[data-content-type="checkListItem"]
+    > div
+    > input {
+    margin-left: 0;
+    margin-right: 6px;
+  }
+}
+
 .shnea-blocknote-image-menu {
   position: fixed;
   z-index: 9998;

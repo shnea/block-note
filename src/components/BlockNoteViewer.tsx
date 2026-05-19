@@ -8,12 +8,14 @@ import { parseBlocks } from "../lib/json";
 import { patchProseMirrorRenderSpec } from "../lib/patchProseMirrorRenderSpec";
 import { schema } from "../lib/schema";
 import { loadFontFamilies, type FontFamilyOption } from "../lib/fonts";
+import type { BlockNoteTheme } from "../lib/theme";
 
 patchProseMirrorRenderSpec();
 
 export type BlockNoteViewerProps = {
   value?: string;
   className?: string;
+  theme?: BlockNoteTheme;
   fontFamilies?: readonly FontFamilyOption[];
   enableImageModal?: boolean;
 };
@@ -44,6 +46,7 @@ function getClickedFileBlockId(target: EventTarget | null): string | undefined {
 export function BlockNoteViewer({
   value,
   className,
+  theme = "light",
   fontFamilies = [],
   enableImageModal = true
 }: BlockNoteViewerProps) {
@@ -98,7 +101,7 @@ export function BlockNoteViewer({
         editor={editor}
         className={mergeClassNames("shnea-blocknote-viewer", className)}
         editable={false}
-        theme="light"
+        theme={theme}
         portalElements={{ default: null }}
         formattingToolbar={false}
         linkToolbar={false}

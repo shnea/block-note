@@ -5,6 +5,7 @@ export type {
   BlockNoteEditorProps
 } from "./components/BlockNoteEditor";
 export type { BlockNoteViewerProps } from "./components/BlockNoteViewer";
+export type { BlockNoteTheme } from "./lib/theme";
 export type {
   FontFaceOption,
   FontFamilyOption,

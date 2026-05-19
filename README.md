@@ -141,6 +141,37 @@ const fonts: FontFamilyOption[] = [
 
 에디터에서 선택한 폰트와 크기는 문서 JSON 안에 inline style로 저장됩니다. 읽기 전용 화면에서도 같은 폰트를 보이게 하려면 `BlockNoteViewer`에도 같은 `fontFamilies` 배열을 넘기세요.
 
+## 테마 사용법
+
+`BlockNoteEditor`와 `BlockNoteViewer` 모두 `theme`을 받을 수 있습니다. 문자열 테마는 `"light"` 또는 `"dark"`를 사용합니다. `BlockNoteViewer`의 기본값은 기존 동작과 같은 `"light"`입니다.
+
+```tsx
+<BlockNoteEditor value={json} onChange={setJson} theme="dark" />
+<BlockNoteViewer value={json} theme="dark" />
+```
+
+BlockNote Mantine 테마 객체도 넘길 수 있습니다.
+
+```tsx
+import type { BlockNoteTheme } from "@shnea/blocknote";
+
+const theme: BlockNoteTheme = {
+  colors: {
+    editor: {
+      text: "#111827",
+      background: "#ffffff"
+    }
+  },
+  fontFamily: "\"Pretendard\", sans-serif",
+  borderRadius: 6
+};
+
+<BlockNoteEditor value={json} onChange={setJson} theme={theme} />
+<BlockNoteViewer value={json} theme={theme} />
+```
+
+라이트/다크 테마를 함께 정의하려면 `{ light, dark }` 형태로 넘길 수 있습니다.
+
 ## Editor Props
 
 ```ts
@@ -148,6 +179,7 @@ export type BlockNoteEditorProps = {
   value?: string;
   className?: string;
   editable?: boolean;
+  theme?: BlockNoteTheme;
   fontFamilies?: readonly FontFamilyOption[];
   fontSizes?: readonly FontSizeOption[];
   onChange?: (json: string) => void;
@@ -156,8 +188,10 @@ export type BlockNoteEditorProps = {
 ```
 
 - `value`: BlockNote 문서 JSON 문자열입니다. 비어 있으면 빈 에디터로 시작합니다.
+- `className`: 내부 `BlockNoteView`에 추가할 클래스 이름입니다.
 - `onChange`: 에디터 문서가 바뀔 때 `JSON.stringify(editor.document)` 결과를 받습니다.
 - `editable`: `false`면 편집을 막습니다.
+- `theme`: `"light"`, `"dark"`, BlockNote Mantine 테마 객체, 또는 `{ light, dark }` 테마 객체를 넘깁니다.
 - `fontFamilies`: 선택 툴바에 표시할 폰트 목록입니다. 선택 시 필요한 폰트 CSS를 자동으로 로드합니다.
 - `fontSizes`: 선택 툴바에 표시할 폰트 크기 목록입니다. 넘기지 않으면 기본 크기 목록을 사용합니다.
 - `uploadFile`: 이미지/파일 업로드 처리를 애플리케이션에서 주입합니다. 반환값은 에디터에 삽입할 URL입니다.
@@ -168,13 +202,19 @@ export type BlockNoteEditorProps = {
 export type BlockNoteViewerProps = {
   value?: string;
   className?: string;
+  theme?: BlockNoteTheme;
   fontFamilies?: readonly FontFamilyOption[];
   enableImageModal?: boolean;
 };
 ```
 
+- `value`: BlockNote 문서 JSON 문자열입니다. 비어 있으면 빈 문서를 렌더링합니다.
+- `className`: 내부 `BlockNoteView`에 추가할 클래스 이름입니다.
+- `theme`: `"light"`, `"dark"`, BlockNote Mantine 테마 객체, 또는 `{ light, dark }` 테마 객체를 넘깁니다. 기본값은 `"light"`입니다.
 - `fontFamilies`: 문서 JSON에 저장된 폰트를 뷰어에서도 렌더링할 수 있도록 같은 폰트 목록을 넘깁니다.
 - `enableImageModal`: 기본값은 `true`입니다. 이미지 클릭 시 확대 모달을 엽니다.
+
+모바일 화면에서는 뷰어의 좌우 여백과 중첩 블록 들여쓰기 간격이 데스크톱보다 좁게 적용됩니다.
 
 ## 파일 업로드 원칙
 
@@ -274,7 +314,7 @@ Docker 운영용 이미지 실행:
 
 ```bash
 cd examples/next
-docker compose -f docker-compose.prod.yml up -d
+docker compose -f docker-compose.prod.yml up -dㅇ
 docker compose -f docker-compose.prod.yml down
 ```
 
@@ -316,6 +356,7 @@ export type {
   BlockNoteEditorHandle,
   BlockNoteEditorProps,
   BlockNoteViewerProps,
+  BlockNoteTheme,
   FontFaceOption,
   FontFamilyOption,
   FontSizeOption

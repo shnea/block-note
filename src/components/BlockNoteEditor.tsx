@@ -45,6 +45,7 @@ import {
   type FontFamilyOption,
   type FontSizeOption
 } from "../lib/fonts";
+import type { BlockNoteTheme } from "../lib/theme";
 
 patchProseMirrorRenderSpec();
 
@@ -57,6 +58,7 @@ export type BlockNoteEditorProps = {
   value?: string;
   className?: string;
   editable?: boolean;
+  theme?: BlockNoteTheme;
   fontFamilies?: readonly FontFamilyOption[];
   fontSizes?: readonly FontSizeOption[];
   onChange?: (json: string) => void;
@@ -370,6 +372,7 @@ export const BlockNoteEditor = forwardRef<
     value,
     className,
     editable = true,
+    theme,
     fontFamilies = [],
     fontSizes = DEFAULT_FONT_SIZES,
     onChange,
@@ -608,6 +611,7 @@ export const BlockNoteEditor = forwardRef<
         editor={editor}
         className={mergeClassNames("shnea-blocknote-editor", className)}
         editable={editable}
+        theme={theme}
         portalElements={{ default: null }}
         formattingToolbar={fontFamilies.length > 0 || fontSizes.length > 0 ? false : true}
         sideMenu={false}
